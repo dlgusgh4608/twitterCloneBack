@@ -8,21 +8,19 @@ module.exports = () => {
         usernameField: 'email',
         passwordField: 'password',
     }, async (email, password, done) => {
-        try{
+        try {
             const user = await User.findOne({
-                where: {
-                    email: email
-                }
+                where: { email }
             });
             if (!user) {
-                return done(null, false, { reason: '이메일이 잘못되었거나 비밀번호가 틀렸습니다.' })
+                return done(null, false, { reason: '이메일이 잘못되었거나 비밀번호가 틀렸습니다.!' }) //아이디 없음
             }
-            const result = bcrypt.compare(password, user.password);
+            const result = await bcrypt.compare(password, user.password);
             if (result) {
                 return done(null, user);
             }
-            return done(null, false, {reason:'이메일이 잘못되었거나 비밀번호가 틀렸습니다.'})
-        } catch(error) {
+            return done(null, false, { reason: '이메일이 잘못되었거나 비밀번호가 틀렸습니다.' }) //비밀번호 틀림
+        } catch (error) {
             console.error(error);
             return done(error);
         }
